@@ -13,3 +13,35 @@ L.tileLayer("https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_toke
     id: "mapbox/streets-v11",
     accessToken: API_KEY
   }).addTo(myMap);
+
+
+  // Getting Data
+  url = 'https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_week.geojson'
+  var geodata = d3.json(url, function(response){//function open
+
+    console.log(response) // checking we get data
+
+     // Create a new marker cluster group
+    var markers = L.markerClusterGroup();
+
+    for (var i = 0; i < response.features.length; i++) { // loop open 
+
+       var coord =  response.features[i].geometry.coordinates;
+       var latlong = [coord[1],coord[0]]
+       console.log(latlong)
+
+
+       var props = {
+        color: 'green',
+        fillColor: '#f03',
+        fillOpacity: 0.5,
+        radius: 50000000};
+
+       markers.addLayer(L.marker(latlong));
+    //    markers.addLayer(L.marker([location.coordinates[1], location.coordinates[0]])
+
+    } // loop close
+
+    myMap.addLayer(markers);
+
+  })//function closer
