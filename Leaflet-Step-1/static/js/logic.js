@@ -1,3 +1,5 @@
+console.log("AHH!")
+
 // Creating map object
 var myMap = L.map("map", {
     center: [40.7, -100],
@@ -67,7 +69,7 @@ L.tileLayer("https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_toke
         fillOpacity: 0.8,
         radius: 50000*scaler};
 
-       markers.addLayer(L.circle(latlong, props));
+       markers.addLayer(L.circle(latlong, props).bindPopUp("HULLO"));
     //    markers.addLayer(L.marker([location.coordinates[1], location.coordinates[0]])
 
     } // loop 2 close
