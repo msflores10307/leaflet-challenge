@@ -69,7 +69,7 @@ L.tileLayer("https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_toke
         fillOpacity: 0.8,
         radius: 50000*scaler};
 
-       markers.addLayer(L.circle(latlong, props).bindPopUp("HULLO"));
+       markers.addLayer(L.circle(latlong, props).bindPopup(`${response.features[i].properties.title}`));
     //    markers.addLayer(L.marker([location.coordinates[1], location.coordinates[0]])
 
     } // loop 2 close
@@ -107,7 +107,7 @@ legend.onAdd = function (map) {
         div.innerHTML +=
             `<i style=background:${getColor(grades[i])} >${legendlabel}</i> ` +
              '<br>';
-        console.log(getColor(grades[i]))     
+        // console.log(getColor(grades[i]))     
     }
 
     return div;
