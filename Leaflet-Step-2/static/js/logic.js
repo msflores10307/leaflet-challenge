@@ -1,25 +1,47 @@
+var mapboxUrl = `https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=${API_KEY}`;
+var satUrl = `https://api.mapbox.com/styles/v1/mapbox.satellite/tiles/{z}/{x}/{y}?access_token=${API_KEY}`;
+var mapboxAttribution = "© <a href='https://www.mapbox.com/about/maps/'>Mapbox</a> © <a href='http://www.openstreetmap.org/copyright'>OpenStreetMap</a> <strong><a href='https://www.mapbox.com/map-feedback/' target='_blank'>Improve this map</a></strong>";
+
+var satellite = L.tileLayer("https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}",{
+  attribution: mapboxAttribution,
+  tileSize: 512,
+  maxZoom: 18,
+  zoomOffset: -1,
+  id: "mapbox/satellite-v9",
+  accessToken: API_KEY
+});
+
+var streets = L.tileLayer(mapboxUrl, {
+  attribution: mapboxAttribution,
+  tileSize: 512,
+  maxZoom: 18,
+  zoomOffset: -1,
+  id: "mapbox/streets-v11",
+  accessToken: API_KEY
+});
+
 // Creating map object
 var myMap = L.map("map", {
     center: [40.7, -100],
-    zoom: 4.3
+    zoom: 4.3,
+    layers: [satellite, streets]
   });
 
-  // Adding tile layer to the map
-L.tileLayer("https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}", {
-    attribution: "© <a href='https://www.mapbox.com/about/maps/'>Mapbox</a> © <a href='http://www.openstreetmap.org/copyright'>OpenStreetMap</a> <strong><a href='https://www.mapbox.com/map-feedback/' target='_blank'>Improve this map</a></strong>",
-    tileSize: 512,
-    maxZoom: 18,
-    zoomOffset: -1,
-    id: "mapbox/streets-v11",
-    accessToken: API_KEY
-  }).addTo(myMap);
 
+
+  var baseMaps = {
+    "Satellite": satellite,
+    "Streets": streets
+};
+
+  // Adding tile layer to the map
+  streets.addTo(myMap)
+  
 
   // Getting earthquake Data
   url = 'https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_week.geojson'
   var geodata = d3.json(url, function(response){//function open
 
-    console.log(response) // checking we get data
 
      // Create a new marker cluster group
     var markers = L.markerClusterGroup();
@@ -115,12 +137,12 @@ legend.addTo(myMap);
 
 // ADDING TECTONIC PLATE BOUNDARIES
 tectonicaddress = './data/boundaries.json'
+var tectoniclayer ; 
 tectonicdata  = d3.json(tectonicaddress,function(geodata){// tectonic function open
 
 
 console.log(geodata)
 var co = geodata.features[0].geometry.coordinates // features is an array ist and can be iterated in foreach
-console.log(co)
 
 for (var j = 0; j < geodata.features.length; j++) { // loop 3 open 
 
@@ -135,3 +157,13 @@ for (var j = 0; j < geodata.features.length; j++) { // loop 3 open
 }// loop 3 close
 
 })//tectonic function close
+
+
+
+
+var overlayMaps = {
+  // "Earthquakes": markers,
+  // "Fault Lines": tectonicpolyline
+};
+
+L.control.layers(baseMaps, overlayMaps).addTo(myMap);
