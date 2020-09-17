@@ -1,5 +1,3 @@
-console.log("AHH!")
-
 // Creating map object
 var myMap = L.map("map", {
     center: [40.7, -100],
@@ -17,7 +15,7 @@ L.tileLayer("https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_toke
   }).addTo(myMap);
 
 
-  // Getting Data
+  // Getting earthquake Data
   url = 'https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_week.geojson'
   var geodata = d3.json(url, function(response){//function open
 
@@ -64,7 +62,7 @@ L.tileLayer("https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_toke
 
 
        var props = {
-        color: colorscalenorm,
+        color: colorscale,
         // fillColor: colorscalenorm,
         fillOpacity: 0.8,
         radius: 50000*scaler};
@@ -114,3 +112,26 @@ legend.onAdd = function (map) {
 };
 
 legend.addTo(myMap);
+
+// ADDING TECTONIC PLATE BOUNDARIES
+tectonicaddress = './data/boundaries.json'
+tectonicdata  = d3.json(tectonicaddress,function(geodata){// tectonic function open
+
+
+console.log(geodata)
+var co = geodata.features[0].geometry.coordinates // features is an array ist and can be iterated in foreach
+console.log(co)
+
+for (var j = 0; j < geodata.features.length; j++) { // loop 3 open 
+
+  var rawpath = geodata.features[j].geometry.coordinates;
+
+  function coordflip(coord) { return [coord[1],coord[0]];}
+
+  var tectonicpath = rawpath.map(coordflip);
+
+  var tectonicpolyline = L.polyline(tectonicpath, {color: 'green', opacity:.5}).addTo(myMap);
+
+}// loop 3 close
+
+})//tectonic function close
