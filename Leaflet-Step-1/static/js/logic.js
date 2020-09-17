@@ -64,7 +64,7 @@ L.tileLayer("https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_toke
 
 
        var props = {
-        color: colorscalenorm,
+        color: colorscale,
         // fillColor: colorscalenorm,
         fillOpacity: 0.8,
         radius: 50000*scaler};
