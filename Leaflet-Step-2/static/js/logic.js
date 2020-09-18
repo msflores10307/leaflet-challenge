@@ -1,4 +1,3 @@
-console.log("Dummy")
 var mapboxUrl = `https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=${API_KEY}`;
 var satUrl = `https://api.mapbox.com/styles/v1/mapbox.satellite/tiles/{z}/{x}/{y}?access_token=${API_KEY}`;
 var mapboxAttribution = "© <a href='https://www.mapbox.com/about/maps/'>Mapbox</a> © <a href='http://www.openstreetmap.org/copyright'>OpenStreetMap</a> <strong><a href='https://www.mapbox.com/map-feedback/' target='_blank'>Improve this map</a></strong>";
@@ -109,9 +108,7 @@ tectonicdata  = d3.json(tectonicaddress,function(geodata){// tectonic function o
 
   // earthquake circles end
 
-console.log(geodata)
-var co = geodata.features[0].geometry.coordinates // features is an array ist and can be iterated in foreach
-
+var globalFaults = L.layerGroup();
 for (var j = 0; j < geodata.features.length; j++) { // loop 3 open 
 
   var rawpath = geodata.features[j].geometry.coordinates;
@@ -120,13 +117,14 @@ for (var j = 0; j < geodata.features.length; j++) { // loop 3 open
 
   var tectonicpath = rawpath.map(coordflip);
 
-  var tectonicpolyline = L.polyline(tectonicpath, {color: 'green', opacity:.5}).addTo(myMap);
-
+  var tectonicpolyline = L.polyline(tectonicpath, {color: 'green', opacity:.5});
+  globalFaults.addLayer(tectonicpolyline);
 }// loop 3 close
 
+globalFaults.addTo(myMap)
 var overlayMaps = {
   "Earthquakes": markers,
-  "Fault Lines": tectonicpolyline
+  "Fault Lines": globalFaults
 };
 var dummyBaseLayers = {};
 
