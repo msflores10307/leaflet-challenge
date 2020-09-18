@@ -99,7 +99,7 @@ tectonicdata  = d3.json(tectonicaddress,function(geodata){// tectonic function o
       fillOpacity: 0.8,
       radius: 79000*scaler};
 
-     markers.addLayer(L.circle(latlong, props).bindPopup(`${response.features[i].properties.title} - ${response.features[i].properties.title}`));
+     markers.addLayer(L.circle(latlong, props).bindPopup(`${response.features[i].properties.type} : ${response.features[i].properties.title}`));
   //    markers.addLayer(L.marker([location.coordinates[1], location.coordinates[0]])
 
   } // loop 2 close
