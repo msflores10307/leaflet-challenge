@@ -1,3 +1,4 @@
+console.log("BABABABA")
 var mapboxUrl = `https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=${API_KEY}`;
 var satUrl = `https://api.mapbox.com/styles/v1/mapbox.satellite/tiles/{z}/{x}/{y}?access_token=${API_KEY}`;
 var mapboxAttribution = "© <a href='https://www.mapbox.com/about/maps/'>Mapbox</a> © <a href='http://www.openstreetmap.org/copyright'>OpenStreetMap</a> <strong><a href='https://www.mapbox.com/map-feedback/' target='_blank'>Improve this map</a></strong>";
@@ -43,58 +44,90 @@ var myMap = L.map("map", {
   var geodata = d3.json(url, function(response){//function open
 
 
-     // Create a new marker cluster group
-    var markers = L.markerClusterGroup();
-
-    var magsum = 0;
-    var magcount = 0;
-    for (var i = 0; i < response.features.length; i++) { // loop 1 open
-
-        var mag_i = response.features[i].properties.mag;
-        magsum = magsum + mag_i;
-        magcount ++
-    } // loop 1 close
-
-    var magavg = magsum/magcount;
-    console.log(magavg);
+     
 
 
+// ADDING TECTONIC PLATE BOUNDARIES
+tectonicaddress = './data/boundaries.json'
+var tectoniclayer ; 
+tectonicdata  = d3.json(tectonicaddress,function(geodata){// tectonic function open
 
-    for (var i = 0; i < response.features.length; i++) { // loop 2 open 
+  // earthquake circles start
 
-       var coord =  response.features[i].geometry.coordinates;
-       var magnitude = response.features[i].properties.mag
-       var latlong = [coord[1],coord[0]]
-       var colorscale = ''
-       var colorscalenorm = '' 
+  // Create a new marker cluster group
+  var markers = L.markerClusterGroup();
 
-       if (magnitude > 4 ) {colorscale = 'red'};
-       if (magnitude >= 3 && magnitude < 4 ) {colorscale = 'orange'};
-       if (magnitude >= 2 && magnitude < 3) {colorscale = 'yellow'};
-       if (magnitude >= 1 && magnitude < 2) {colorscale = 'green'};
-       if (magnitude < 1) {colorscale = 'white'};
+  var magsum = 0;
+  var magcount = 0;
+  for (var i = 0; i < response.features.length; i++) { // loop 1 open
 
-    var scaler = magnitude/magavg;
+      var mag_i = +response.features[i].properties.mag;
+      magsum = magsum + mag_i;
+      magcount ++
+  } // loop 1 close
 
-       if (scaler > 4 ) {colorscalenorm = 'red'};
-       if (scaler >= 3 && scaler < 4 ) {colorscalenorm = 'orange'};
-       if (scaler >= 2 && scaler < 3) {colorscalenorm = 'yellow'};
-       if (scaler >= 1 && scaler < 2) {colorscalenorm = 'green'};
-       if (scaler < 1) {colorscalenorm = 'white'};
+  var magavg = magsum/magcount;
+  console.log(magavg);
 
 
-       var props = {
-        color: colorscale,
-        // fillColor: colorscalenorm,
-        fillOpacity: 0.8,
-        radius: 50000*scaler};
 
-       markers.addLayer(L.circle(latlong, props).bindPopup(`${response.features[i].properties.title}`));
-    //    markers.addLayer(L.marker([location.coordinates[1], location.coordinates[0]])
+  for (var i = 0; i < response.features.length; i++) { // loop 2 open 
 
-    } // loop 2 close
+     var coord =  response.features[i].geometry.coordinates;
+     var magnitude = response.features[i].properties.mag
+     var latlong = [coord[1],coord[0]]
+     var colorscale = ''
+     var colorscalenorm = '' 
 
-    myMap.addLayer(markers);
+     if (magnitude > 4 ) {colorscale = 'red'};
+     if (magnitude >= 3 && magnitude < 4 ) {colorscale = 'orange'};
+     if (magnitude >= 2 && magnitude < 3) {colorscale = 'yellow'};
+     if (magnitude >= 1 && magnitude < 2) {colorscale = 'green'};
+     if (magnitude < 1) {colorscale = 'white'};
+
+  var scaler = magnitude/magavg;
+
+     if (scaler > 4 ) {colorscalenorm = 'red'};
+     if (scaler >= 3 && scaler < 4 ) {colorscalenorm = 'orange'};
+     if (scaler >= 2 && scaler < 3) {colorscalenorm = 'yellow'};
+     if (scaler >= 1 && scaler < 2) {colorscalenorm = 'green'};
+     if (scaler < 1) {colorscalenorm = 'white'};
+
+
+     var props = {
+      color: colorscale,
+      // fillColor: colorscalenorm,
+      fillOpacity: 0.8,
+      radius: 79000*scaler};
+
+     markers.addLayer(L.circle(latlong, props).bindPopup(`${response.features[i].properties.title} - ${response.features[i].properties.title}`));
+  //    markers.addLayer(L.marker([location.coordinates[1], location.coordinates[0]])
+
+  } // loop 2 close
+
+  myMap.addLayer(markers);
+
+  // earthquake circles end
+
+console.log(geodata)
+var co = geodata.features[0].geometry.coordinates // features is an array ist and can be iterated in foreach
+
+for (var j = 0; j < geodata.features.length; j++) { // loop 3 open 
+
+  var rawpath = geodata.features[j].geometry.coordinates;
+
+  function coordflip(coord) { return [coord[1],coord[0]];}
+
+  var tectonicpath = rawpath.map(coordflip);
+
+  var tectonicpolyline = L.polyline(tectonicpath, {color: 'green', opacity:.5}).addTo(myMap);
+
+}// loop 3 close
+
+})//tectonic function close
+
+
+
 
   })//function closer
 
@@ -115,7 +148,7 @@ var myMap = L.map("map", {
 
 var legend = L.control({position: 'bottomleft'});
 
-legend.onAdd = function (map) {
+legend.onAdd = function (map) { 
     var div = L.DomUtil.create("div", "info legend");
     
         grades = [0,1,2,3,4,5],
@@ -134,31 +167,6 @@ legend.onAdd = function (map) {
 };
 
 legend.addTo(myMap);
-
-// ADDING TECTONIC PLATE BOUNDARIES
-tectonicaddress = './data/boundaries.json'
-var tectoniclayer ; 
-tectonicdata  = d3.json(tectonicaddress,function(geodata){// tectonic function open
-
-
-console.log(geodata)
-var co = geodata.features[0].geometry.coordinates // features is an array ist and can be iterated in foreach
-
-for (var j = 0; j < geodata.features.length; j++) { // loop 3 open 
-
-  var rawpath = geodata.features[j].geometry.coordinates;
-
-  function coordflip(coord) { return [coord[1],coord[0]];}
-
-  var tectonicpath = rawpath.map(coordflip);
-
-  var tectonicpolyline = L.polyline(tectonicpath, {color: 'green', opacity:.5}).addTo(myMap);
-
-}// loop 3 close
-
-})//tectonic function close
-
-
 
 
 var overlayMaps = {
