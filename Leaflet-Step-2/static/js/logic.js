@@ -1,4 +1,4 @@
-console.log("BABABABA")
+console.log("Dummy")
 var mapboxUrl = `https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=${API_KEY}`;
 var satUrl = `https://api.mapbox.com/styles/v1/mapbox.satellite/tiles/{z}/{x}/{y}?access_token=${API_KEY}`;
 var mapboxAttribution = "© <a href='https://www.mapbox.com/about/maps/'>Mapbox</a> © <a href='http://www.openstreetmap.org/copyright'>OpenStreetMap</a> <strong><a href='https://www.mapbox.com/map-feedback/' target='_blank'>Improve this map</a></strong>";
@@ -124,16 +124,20 @@ for (var j = 0; j < geodata.features.length; j++) { // loop 3 open
 
 }// loop 3 close
 
+var overlayMaps = {
+  "Earthquakes": markers,
+  "Fault Lines": tectonicpolyline
+};
+var dummyBaseLayers = {};
+
+L.control.layers(dummyBaseLayers,overlayMaps).addTo(myMap);
+
 })//tectonic function close
-
-
-
-
   })//function closer
 
 
 
-  // Attempting LEGEND
+  // Adding Legend
   
   L.DomUtil.create('div', 'info legend');
   function getColor(d) {
@@ -174,4 +178,4 @@ var overlayMaps = {
   // "Fault Lines": tectonicpolyline
 };
 
-L.control.layers(baseMaps, overlayMaps).addTo(myMap);
+L.control.layers(baseMaps).addTo(myMap);
