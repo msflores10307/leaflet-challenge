@@ -100,7 +100,7 @@ tectonicdata  = d3.json(tectonicaddress,function(geodata){// tectonic function o
       color: colorscale,
       // fillColor: colorscalenorm,
       fillOpacity: 0.8,
-      radius: 40000*magnitude //*scaler
+      radius: 20000*scaler //*scaler
     };
 
      markers.addLayer(L.circle(latlong, props).bindPopup(`${response.features[i].properties.type} : ${response.features[i].properties.title}`));
