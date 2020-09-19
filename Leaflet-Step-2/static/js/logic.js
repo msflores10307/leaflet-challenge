@@ -78,7 +78,7 @@ tectonicdata  = d3.json(tectonicaddress,function(geodata){// tectonic function o
      var latlong = [coord[1],coord[0]]
      var colorscale = ''
      var colorscalenorm = '' 
-     if (magnitude > 5) {colorscale = '#800000'};
+     if (magnitude >= 5) {colorscale = '#800000'};
      if (magnitude >= 4 && magnitude < 5) {colorscale = '#f6803f'};
      if (magnitude >= 3 && magnitude < 4 ) {colorscale = '#f5b34c'};
      if (magnitude >= 2 && magnitude < 3) {colorscale = '#f6e072'};
