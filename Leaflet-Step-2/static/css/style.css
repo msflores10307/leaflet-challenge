@@ -14,7 +14,14 @@ h2 {
 }
 
 i {
-  padding: 0px;
-  color: navy;
-  font-size: large;
+  padding: 3px;
+  color:  rgb(0, 24, 0);
+  font-size: medium;
+  width: 20px;
+}
+
+.info {
+  background-color: rgba(19, 75, 99, 0.582);
+  padding: 14px;
+
 }
