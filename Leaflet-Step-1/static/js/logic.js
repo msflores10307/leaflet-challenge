@@ -24,7 +24,7 @@ L.tileLayer("https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_toke
     console.log(response) // checking we get data
 
      // Create a new marker cluster group
-    var markers = L.markerClusterGroup();
+    var markers = L.layerGroup();
 
     var magsum = 0;
     var magcount = 0;
@@ -46,9 +46,9 @@ L.tileLayer("https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_toke
        var magnitude = response.features[i].properties.mag
        var latlong = [coord[1],coord[0]]
        var colorscale = ''
-       var colorscalenorm = '' 
 
-       if (magnitude > 4 ) {colorscale = 'red'};
+       if (magnitude >= 5) {colorscale = '#000000'}
+       if (magnitude >= 4 && scaler < 5 ) {colorscale = 'red'};
        if (magnitude >= 3 && magnitude < 4 ) {colorscale = 'orange'};
        if (magnitude >= 2 && magnitude < 3) {colorscale = 'yellow'};
        if (magnitude >= 1 && magnitude < 2) {colorscale = 'green'};
@@ -56,18 +56,12 @@ L.tileLayer("https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_toke
 
     var scaler = magnitude/magavg;
 
-       if (scaler > 4 ) {colorscalenorm = 'red'};
-       if (scaler >= 3 && scaler < 4 ) {colorscalenorm = 'orange'};
-       if (scaler >= 2 && scaler < 3) {colorscalenorm = 'yellow'};
-       if (scaler >= 1 && scaler < 2) {colorscalenorm = 'green'};
-       if (scaler < 1) {colorscalenorm = 'white'};
-
 
        var props = {
         color: colorscale,
         // fillColor: colorscalenorm,
-        fillOpacity: 0.8,
-        radius: 50000*scaler};
+        fillOpacity: 0.5,
+        radius: 40000*scaler};
 
        markers.addLayer(L.circle(latlong, props).bindPopup(`${response.features[i].properties.title}`));
     //    markers.addLayer(L.marker([location.coordinates[1], location.coordinates[0]])
