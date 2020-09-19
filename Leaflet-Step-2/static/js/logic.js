@@ -79,19 +79,19 @@ tectonicdata  = d3.json(tectonicaddress,function(geodata){// tectonic function o
      var colorscale = ''
      var colorscalenorm = '' 
 
-     if (magnitude > 4 ) {colorscale = 'red'};
-     if (magnitude >= 3 && magnitude < 4 ) {colorscale = 'orange'};
-     if (magnitude >= 2 && magnitude < 3) {colorscale = 'yellow'};
-     if (magnitude >= 1 && magnitude < 2) {colorscale = 'green'};
-     if (magnitude < 1) {colorscale = 'white'};
+     if (magnitude > 4 ) {colorscale = '#f6803f'};
+     if (magnitude >= 3 && magnitude < 4 ) {colorscale = '#f5b34c'};
+     if (magnitude >= 2 && magnitude < 3) {colorscale = '#f6e072'};
+     if (magnitude >= 1 && magnitude < 2) {colorscale = '#c5e08b'};
+     if (magnitude < 1) {colorscale = '#bde5c0'};
 
   var scaler = Math.pow(magnitude,2)/Math.pow(magavg,2);
 
-     if (scaler > 4 ) {colorscalenorm = 'red'};
-     if (scaler >= 3 && scaler < 4 ) {colorscalenorm = 'orange'};
-     if (scaler >= 2 && scaler < 3) {colorscalenorm = 'yellow'};
-     if (scaler >= 1 && scaler < 2) {colorscalenorm = 'green'};
-     if (scaler < 1) {colorscalenorm = 'white'};
+     if (scaler > 4 ) {colorscalenorm = '#f6803f'};
+     if (scaler >= 3 && scaler < 4 ) {colorscalenorm = '#f5b34c'};
+     if (scaler >= 2 && scaler < 3) {colorscalenorm = '#f6e072'};
+     if (scaler >= 1 && scaler < 2) {colorscalenorm = '#c5e08b'};
+     if (scaler < 1) {colorscalenorm = '#bde5c0'};
 
 
      var props = {
@@ -118,7 +118,7 @@ for (var j = 0; j < geodata.features.length; j++) { // loop 3 open
 
   var tectonicpath = rawpath.map(coordflip);
 
-  var tectonicpolyline = L.polyline(tectonicpath, {color: 'green', opacity:.5});
+  var tectonicpolyline = L.polyline(tectonicpath, {color: '#c5e08b', opacity:.5});
   globalFaults.addLayer(tectonicpolyline);
 }// loop 3 close
 
@@ -140,12 +140,12 @@ L.control.layers(dummyBaseLayers,overlayMaps).addTo(myMap);
   
   L.DomUtil.create('div', 'info legend');
   function getColor(d) {
-    return d < 1 ? 'white' :
-           d < 2  ? 'green' :
-           d < 3  ? 'yellow' :
-           d < 4  ? 'orange' :
-           d < 5   ? 'red' :
-           d < 6   ? 'red' : 'red' ;
+    return d < 1 ? '#bde5c0' :
+           d < 2  ? '#c5e08b' :
+           d < 3  ? '#f6e072' :
+           d < 4  ? '#f5b34c' :
+           d < 5   ? '#f6803f' :
+           d < 6   ? '#f6803f' : '#f6803f' ;
            
 }
 
