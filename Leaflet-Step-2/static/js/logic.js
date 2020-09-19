@@ -172,7 +172,7 @@ legend.onAdd = function (map) {
 
     div.innerHTML +=
         `<div class = 'legend'>
-        <i style=background:${getColor(grades[6])} > 5+   </i>
+        <i style=background:${getColor(grades[6])} > >= 5  </i>
         </div> `;
 
     return div;
