@@ -1,7 +1,9 @@
+// creating mapbox attributes
 var mapboxUrl = `https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=${API_KEY}`;
 var satUrl = `https://api.mapbox.com/styles/v1/mapbox.satellite/tiles/{z}/{x}/{y}?access_token=${API_KEY}`;
 var mapboxAttribution = "© <a href='https://www.mapbox.com/about/maps/'>Mapbox</a> © <a href='http://www.openstreetmap.org/copyright'>OpenStreetMap</a> <strong><a href='https://www.mapbox.com/map-feedback/' target='_blank'>Improve this map</a></strong>";
 
+// creating basemap parameters and layers
 var satellite = L.tileLayer(mapboxUrl,{
   attribution: mapboxAttribution,
   tileSize: 512,
@@ -27,8 +29,7 @@ var myMap = L.map("map", {
     layers: [satellite, streets]
   });
 
-
-
+// setting basemap layers
   var baseMaps = {
     "Streets": streets,
     "Satellite": satellite
@@ -44,35 +45,33 @@ var myMap = L.map("map", {
   var geodata = d3.json(url, function(response){//function open
 
 
-     
-
-
+    
 // ADDING TECTONIC PLATE BOUNDARIES
 tectonicaddress = './data/boundaries.json'
 var tectoniclayer ; 
 tectonicdata  = d3.json(tectonicaddress,function(geodata){// tectonic function open
 
-  // earthquake circles start
+  // the procedure for adding earthquacke circles begins here
 
-  // Create a new marker cluster group
+  // Create a new layer group for all circles
   var markers = L.layerGroup();
 
+  // this section calculates average magnitude for the purpose of normalizing and scaling results
   var magsum = 0;
   var magcount = 0;
   for (var i = 0; i < response.features.length; i++) { // loop 1 open
-
       var mag_i = +response.features[i].properties.mag;
       magsum = magsum + mag_i;
       magcount ++
   } // loop 1 close
-
   var magavg = magsum/magcount;
   console.log(magavg);
 
 
-
+// this loop adds circles to the layer group, specifies radius and color according to magnitude
   for (var i = 0; i < response.features.length; i++) { // loop 2 open 
 
+    // this section assigns color according to magnitude
      var coord =  response.features[i].geometry.coordinates;
      var magnitude = response.features[i].properties.mag
      var latlong = [coord[1],coord[0]]
@@ -86,8 +85,8 @@ tectonicdata  = d3.json(tectonicaddress,function(geodata){// tectonic function o
      if (magnitude < 1) {colorscale = '#bde5c0'};
 
     
-
-  var scaler = Math.pow(magnitude,2)/Math.pow(magavg,2)
+    // calculates a scalar value to highlight earthquakes much bigger than average
+     var scaler = Math.pow(magnitude,2)/Math.pow(magavg,2)
 
      if (scaler > 4 ) {colorscalenorm = '#f6803f'};
      if (scaler >= 3 && scaler < 4 ) {colorscalenorm = '#f5b34c'};
@@ -95,7 +94,7 @@ tectonicdata  = d3.json(tectonicaddress,function(geodata){// tectonic function o
      if (scaler >= 1 && scaler < 2) {colorscalenorm = '#c5e08b'};
      if (scaler < 1) {colorscalenorm = '#bde5c0'};
 
-
+      //sets circle properties - color and radius
      var props = {
       color: colorscale,
       // fillColor: colorscalenorm,
@@ -103,16 +102,21 @@ tectonicdata  = d3.json(tectonicaddress,function(geodata){// tectonic function o
       radius: 20000*scaler //*scaler
     };
 
+    // adds circle to layer group, and binds popup with some information
      markers.addLayer(L.circle(latlong, props).bindPopup(`${response.features[i].properties.type} : ${response.features[i].properties.title}`));
   //    markers.addLayer(L.marker([location.coordinates[1], location.coordinates[0]])
 
   } // loop 2 close
 
+  // adding circle layer group to the map
   myMap.addLayer(markers);
 
-  // earthquake circles end
+  // The procedure for adding earthquake circles ends here.
 
+// initializing a layer group for faultline paths
 var globalFaults = L.layerGroup();
+
+// this loop goes through data and plots coordinates onto path group
 for (var j = 0; j < geodata.features.length; j++) { // loop 3 open 
 
   var rawpath = geodata.features[j].geometry.coordinates;
@@ -125,7 +129,10 @@ for (var j = 0; j < geodata.features.length; j++) { // loop 3 open
   globalFaults.addLayer(tectonicpolyline);
 }// loop 3 close
 
+// adding tectonic fault path layer group to path
 globalFaults.addTo(myMap)
+
+// adding overlay maps 
 var overlayMaps = {
   "Earthquakes": markers,
   "Fault Lines": globalFaults
@@ -139,8 +146,7 @@ L.control.layers(dummyBaseLayers,overlayMaps).addTo(myMap);
 
 
 
-  // Adding Legend
-  
+  // Adding a div for a Legend
   L.DomUtil.create('div', 'info legend');
   function getColor(d) {
     return d < 1 ? '#bde5c0' :
@@ -154,6 +160,7 @@ L.control.layers(dummyBaseLayers,overlayMaps).addTo(myMap);
 
 var legend = L.control({position: 'bottomleft'});
 
+// this function assigns values and colors to the legends
 legend.onAdd = function (map) { 
     var div = L.DomUtil.create("div", "info legend");
     
@@ -167,7 +174,6 @@ legend.onAdd = function (map) {
         `<div class = 'legend'>
         <i style=background:${getColor(grades[i])} > ${legendlabel}</i>
         </divs> ` +'<br>';
-        // console.log(getColor(grades[i]))     
     }
 
     div.innerHTML +=
@@ -178,10 +184,10 @@ legend.onAdd = function (map) {
     return div;
 };
 
+// adds legend to map
 legend.addTo(myMap);
 
-
-
+// adds basemaps controls to map
 L.control.layers(baseMaps).addTo(myMap);
 
 
