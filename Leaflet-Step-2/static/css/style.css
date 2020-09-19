@@ -8,3 +8,13 @@ body,
 html {
   height: 100%;
 }
+
+h2 {
+  padding:1px;
+}
+
+i {
+  padding: 0px;
+  color: navy;
+  font-size: large;
+}

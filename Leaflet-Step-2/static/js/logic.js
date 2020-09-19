@@ -6,6 +6,7 @@ var satellite = L.tileLayer("https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}
   attribution: mapboxAttribution,
   tileSize: 512,
   maxZoom: 18,
+  minZoom: 18,
   zoomOffset: -1,
   id: "mapbox/satellite-v9",
   accessToken: API_KEY
@@ -84,7 +85,7 @@ tectonicdata  = d3.json(tectonicaddress,function(geodata){// tectonic function o
      if (magnitude >= 1 && magnitude < 2) {colorscale = 'green'};
      if (magnitude < 1) {colorscale = 'white'};
 
-  var scaler = magnitude/magavg;
+  var scaler = Math.pow(magnitude,2)/Math.pow(magavg,2);
 
      if (scaler > 4 ) {colorscalenorm = 'red'};
      if (scaler >= 3 && scaler < 4 ) {colorscalenorm = 'orange'};
@@ -97,7 +98,7 @@ tectonicdata  = d3.json(tectonicaddress,function(geodata){// tectonic function o
       color: colorscale,
       // fillColor: colorscalenorm,
       fillOpacity: 0.8,
-      radius: 79000*scaler};
+      radius: 40000*scaler};
 
      markers.addLayer(L.circle(latlong, props).bindPopup(`${response.features[i].properties.type} : ${response.features[i].properties.title}`));
   //    markers.addLayer(L.marker([location.coordinates[1], location.coordinates[0]])
@@ -160,8 +161,9 @@ legend.onAdd = function (map) {
     for (var i = 0; i < grades.length-1; i++) {
         var legendlabel = `${grades[i]} - ${grades[i+1]}`;
         div.innerHTML +=
-            `<i style=background:${getColor(grades[i])} >${legendlabel}</i> ` +
-             '<br>';
+        `<div class = 'legend'>
+        <i style=background:${getColor(grades[i])} > ${legendlabel}</i>
+        </divs> ` +'<br>';
         // console.log(getColor(grades[i]))     
     }
 
