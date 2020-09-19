@@ -5,7 +5,7 @@ var mapboxAttribution = "© <a href='https://www.mapbox.com/about/maps/'>Mapbox<
 var satellite = L.tileLayer(mapboxUrl,{
   attribution: mapboxAttribution,
   tileSize: 512,
-  maxZoom: 18,
+  maxZoom: 6,
   zoomOffset: -1,
   id: "mapbox/satellite-v9",
   accessToken: API_KEY
@@ -14,7 +14,7 @@ var satellite = L.tileLayer(mapboxUrl,{
 var streets = L.tileLayer(mapboxUrl, {
   attribution: mapboxAttribution,
   tileSize: 512,
-  maxZoom: 18,
+  maxZoom: 6,
   zoomOffset: -1,
   id: "mapbox/streets-v11",
   accessToken: API_KEY
@@ -55,7 +55,7 @@ tectonicdata  = d3.json(tectonicaddress,function(geodata){// tectonic function o
   // earthquake circles start
 
   // Create a new marker cluster group
-  var markers = L.markerClusterGroup();
+  var markers = L.layerGroup();
 
   var magsum = 0;
   var magcount = 0;
@@ -78,14 +78,16 @@ tectonicdata  = d3.json(tectonicaddress,function(geodata){// tectonic function o
      var latlong = [coord[1],coord[0]]
      var colorscale = ''
      var colorscalenorm = '' 
-
-     if (magnitude > 4 ) {colorscale = '#f6803f'};
+     if (magnitude > 5) {colorscale = '#800000'};
+     if (magnitude >= 4 && magnitude < 5) {colorscale = '#f6803f'};
      if (magnitude >= 3 && magnitude < 4 ) {colorscale = '#f5b34c'};
      if (magnitude >= 2 && magnitude < 3) {colorscale = '#f6e072'};
      if (magnitude >= 1 && magnitude < 2) {colorscale = '#c5e08b'};
      if (magnitude < 1) {colorscale = '#bde5c0'};
 
-  var scaler = Math.pow(magnitude,2)/Math.pow(magavg,2);
+    
+
+  var scaler = Math.pow(magnitude,2)/Math.pow(magavg,2)
 
      if (scaler > 4 ) {colorscalenorm = '#f6803f'};
      if (scaler >= 3 && scaler < 4 ) {colorscalenorm = '#f5b34c'};
@@ -98,7 +100,8 @@ tectonicdata  = d3.json(tectonicaddress,function(geodata){// tectonic function o
       color: colorscale,
       // fillColor: colorscalenorm,
       fillOpacity: 0.8,
-      radius: 40000*scaler};
+      radius: 40000*magnitude //*scaler
+    };
 
      markers.addLayer(L.circle(latlong, props).bindPopup(`${response.features[i].properties.type} : ${response.features[i].properties.title}`));
   //    markers.addLayer(L.marker([location.coordinates[1], location.coordinates[0]])
@@ -118,7 +121,7 @@ for (var j = 0; j < geodata.features.length; j++) { // loop 3 open
 
   var tectonicpath = rawpath.map(coordflip);
 
-  var tectonicpolyline = L.polyline(tectonicpath, {color: '#c5e08b', opacity:.5});
+  var tectonicpolyline = L.polyline(tectonicpath, {color: '	#FF8C00', opacity:.35});
   globalFaults.addLayer(tectonicpolyline);
 }// loop 3 close
 
@@ -145,7 +148,7 @@ L.control.layers(dummyBaseLayers,overlayMaps).addTo(myMap);
            d < 3  ? '#f6e072' :
            d < 4  ? '#f5b34c' :
            d < 5   ? '#f6803f' :
-           d < 6   ? '#f6803f' : '#f6803f' ;
+           d < 6   ? '#800000' : '#800000' ;
            
 }
 
@@ -167,15 +170,18 @@ legend.onAdd = function (map) {
         // console.log(getColor(grades[i]))     
     }
 
+    div.innerHTML +=
+        `<div class = 'legend'>
+        <i style=background:${getColor(grades[6])} > 5+   </i>
+        </div> `;
+
     return div;
 };
 
 legend.addTo(myMap);
 
 
-var overlayMaps = {
-  // "Earthquakes": markers,
-  // "Fault Lines": tectonicpolyline
-};
 
 L.control.layers(baseMaps).addTo(myMap);
+
+
