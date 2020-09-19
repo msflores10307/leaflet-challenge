@@ -2,11 +2,10 @@ var mapboxUrl = `https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_
 var satUrl = `https://api.mapbox.com/styles/v1/mapbox.satellite/tiles/{z}/{x}/{y}?access_token=${API_KEY}`;
 var mapboxAttribution = "© <a href='https://www.mapbox.com/about/maps/'>Mapbox</a> © <a href='http://www.openstreetmap.org/copyright'>OpenStreetMap</a> <strong><a href='https://www.mapbox.com/map-feedback/' target='_blank'>Improve this map</a></strong>";
 
-var satellite = L.tileLayer("https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}",{
+var satellite = L.tileLayer(mapboxUrl,{
   attribution: mapboxAttribution,
   tileSize: 512,
   maxZoom: 18,
-  minZoom: 18,
   zoomOffset: -1,
   id: "mapbox/satellite-v9",
   accessToken: API_KEY
@@ -31,8 +30,9 @@ var myMap = L.map("map", {
 
 
   var baseMaps = {
-    "Satellite": satellite,
-    "Streets": streets
+    "Streets": streets,
+    "Satellite": satellite
+    
 };
 
   // Adding tile layer to the map
