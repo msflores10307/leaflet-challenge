@@ -23,9 +23,10 @@ L.tileLayer("https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_toke
 
     console.log(response) // checking we get data
 
-     // Create a new marker cluster group
+     // Create a new layer group
     var markers = L.layerGroup();
 
+    // this loop and section of code calculates average mag for purpose of scaling
     var magsum = 0;
     var magcount = 0;
     for (var i = 0; i < response.features.length; i++) { // loop 1 open
@@ -39,7 +40,7 @@ L.tileLayer("https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_toke
     console.log(magavg);
 
 
-
+    // this loop adds circles to  layer group
     for (var i = 0; i < response.features.length; i++) { // loop 2 open 
 
        var coord =  response.features[i].geometry.coordinates;
@@ -74,9 +75,12 @@ L.tileLayer("https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_toke
 
 
 
-  // Attempting LEGEND
+  // creating LEGEND
   
+  // create div for lengend
   L.DomUtil.create('div', 'info legend');
+
+// the following block of code adds content to legend and formats object. 
   function getColor(d) {
     return d < 1 ? 'white' :
            d < 2  ? 'blue' :
@@ -86,7 +90,6 @@ L.tileLayer("https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_toke
            d < 6   ? 'red' : 'red' ;
            
 }
-
 var legend = L.control({position: 'bottomleft'});
 
 legend.onAdd = function (map) { 
@@ -111,5 +114,5 @@ legend.onAdd = function (map) {
 
   return div;
 };
-
+//adding legend to map
 legend.addTo(myMap);
