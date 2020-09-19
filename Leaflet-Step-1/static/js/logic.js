@@ -47,11 +47,11 @@ L.tileLayer("https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_toke
        var latlong = [coord[1],coord[0]]
        var colorscale = ''
 
-       if (magnitude >= 5) {colorscale = '#000000'}
-       if (magnitude >= 4 && scaler < 5 ) {colorscale = 'red'};
-       if (magnitude >= 3 && magnitude < 4 ) {colorscale = 'orange'};
-       if (magnitude >= 2 && magnitude < 3) {colorscale = 'yellow'};
-       if (magnitude >= 1 && magnitude < 2) {colorscale = 'green'};
+       if (magnitude >= 5) {colorscale = 'red'}
+       if (magnitude >= 4 && scaler < 5 ) {colorscale = 'orange'};
+       if (magnitude >= 3 && magnitude < 4 ) {colorscale = 'yellow'};
+       if (magnitude >= 2 && magnitude < 3) {colorscale = 'green'};
+       if (magnitude >= 1 && magnitude < 2) {colorscale = 'blue'};
        if (magnitude < 1) {colorscale = 'white'};
 
     var scaler = magnitude/magavg;
@@ -79,32 +79,37 @@ L.tileLayer("https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_toke
   L.DomUtil.create('div', 'info legend');
   function getColor(d) {
     return d < 1 ? 'white' :
-           d < 2  ? 'green' :
-           d < 3  ? 'yellow' :
-           d < 4  ? 'orange' :
-           d < 5   ? 'red' :
+           d < 2  ? 'blue' :
+           d < 3  ? 'green' :
+           d < 4  ? 'yellow' :
+           d < 5   ? 'orange' :
            d < 6   ? 'red' : 'red' ;
            
 }
 
 var legend = L.control({position: 'bottomleft'});
 
-legend.onAdd = function (map) {
-    var div = L.DomUtil.create("div", "info legend");
-    
-        grades = [0,1,2,3,4,5],
-        labels = [];
+legend.onAdd = function (map) { 
+  var div = L.DomUtil.create("div", "info legend");
+  
+      grades = [0,1,2,3,4,5],
+      labels = [];
 
-    // loop through our density intervals and generate a label with a colored square for each interval
-    for (var i = 0; i < grades.length-1; i++) {
-        var legendlabel = `${grades[i]} - ${grades[i+1]}`;
-        div.innerHTML +=
-            `<i style=background:${getColor(grades[i])} >${legendlabel}</i> ` +
-             '<br>';
-        // console.log(getColor(grades[i]))     
-    }
+  // loop through our density intervals and generate a label with a colored square for each interval
+  for (var i = 0; i < grades.length-1; i++) {
+      var legendlabel = `${grades[i]} - ${grades[i+1]}`;
+      div.innerHTML +=
+      `<div class = 'legend'>
+      <i style=background:${getColor(grades[i])} > ${legendlabel}</i>
+      </divs> ` +'<br>';
+  }
 
-    return div;
+  div.innerHTML +=
+      `<div class = 'legend'>
+      <i style=background:${getColor(grades[6])} > >= 5  </i>
+      </div> `;
+
+  return div;
 };
 
 legend.addTo(myMap);
